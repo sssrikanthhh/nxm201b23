@@ -1,0 +1,19 @@
+1. db.countries.aggregate([{$match:{Region:"EASTERN EUROPE",pop:{$sum:"$Population"}}}])
+
+2. db.countries.aggregate([{$group: { _id: { country: "$Country",region: "$Region" }, total: { $sum: "$Population" }}},{$group: { _id: "$_id.country", avg: { $avg: "$total" }}}])
+
+3. db.data.aggregate([{$group : {_id : 'world' , avg_birthrate : {$avg : '$Birthrate'}}}])
+
+4. db.countries.aggregate([{$sort:{"GDP ($ per capita)":1,"Population":-1}}{$limit:10}]);
+
+5. db.countries.aggregate([{$match:{Birthrate:{$lt:20}}},{ $group: { _id: { region: "$Region"}}},{$sort:{"Birthrate":1}},{$limit:1}]);
+
+6. db.countries.aggregate([{$group:{_id:{region:"$Region"}, pop:{$sum: "$Population"}}}]);
+
+7. db.countries.aggregate([{$group:{_id:{region:"$Region"},avg:{ $avg:"$Birthrate"}}},{$sort:{avg:1}}]);
+
+8. db.countries.aggregate([{$sort:{"Population":-1}},{$project:{Country:1,Population:1}},{$skip:10},{$limit:10}])
+
+9. db.countries.updateMany({PhonesPerThousand:{$gt:400}},{$set:{"PhonesPerThousand":1000}})
+
+10. db.countries.updateMany({Climate:{$gt:0}},{$set:{"Climate":0}})
