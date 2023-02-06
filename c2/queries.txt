@@ -1,0 +1,47 @@
+1. db.users.aggregate([{$lookup:{from: "purchases",localField: "_id",foreignField:"user_id",as:"purchases"}}])
+
+O/P: [
+  {
+    _id: 1,
+    name: 'Alice',
+    age: 25,
+    purchases: [
+      { _id: 1, user_id: 1, item: 'book', price: 10 },
+      { _id: 2, user_id: 1, item: 'pen', price: 5 }
+    ]
+  },
+  {
+    _id: 2,
+    name: 'Bob',
+    age: 30,
+    purchases: [
+      { _id: 3, user_id: 2, item: 'book', price: 15 },
+      { _id: 4, user_id: 2, item: 'pen', price: 6 }
+    ]
+  },
+  {
+    _id: 3,
+    name: 'Charlie',
+    age: 35,
+    purchases: [
+      { _id: 5, user_id: 3, item: 'book', price: 20 },
+      { _id: 6, user_id: 3, item: 'pen', price: 7 }
+    ]
+  }
+]
+
+2.  db.users.aggregate([{$lookup:{from: "purchases",localField: "_id",foreignField:"user_id",as:"purchases"}},{$project:{_id:1,name:1,total_purchases:{$size:"$purchases"},total_spending:{$sum:{"$sum":"$purchases.price"}}}}])
+
+O/P: [
+  { _id: 1, name: 'Alice', total_purchases: 2, total_spending: 15 },
+  { _id: 2, name: 'Bob', total_purchases: 2, total_spending: 21 },
+  { _id: 3, name: 'Charlie', total_purchases: 2, total_spending: 27 }
+]
+
+3. db.users.aggregate([{$lookup:{from: "purchases",localField: "_id",foreignField:"user_id",as:"purchases"}},{$project:{_id:1,name:1,total_purchases:{$size:"$purchases"},total_spending:{$sum:{"$sum":"$purchases.price"}}}},{$sort:{total_spending:-1}}])
+
+O/P: [
+  { _id: 3, name: 'Charlie', total_purchases: 2, total_spending: 27 },
+  { _id: 2, name: 'Bob', total_purchases: 2, total_spending: 21 },
+  { _id: 1, name: 'Alice', total_purchases: 2, total_spending: 15 }
+]
